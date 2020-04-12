@@ -20,7 +20,7 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.post('/', async (req, res) => {
+app.post('/adduser', async (req, res) => {
 
     let result = {}
     try {
@@ -39,6 +39,30 @@ app.post('/', async (req, res) => {
     catch (err) {
         result.success = false
         console.log("error", err)
+    }
+    finally {
+        res.setHeader("content-type", "application/json")
+        res.send(JSON.stringify(result))
+    }
+})
+
+app.post('/login', async (req, res) => {
+    let result = {}
+    try {
+        const data = req.body
+        const loggedIN = await userController.verifyLogin(data)
+        if (!loggedIN) {
+            console.log("wrong credintial")
+            result.success = false
+        } else {
+            console.log("correct")
+            result.success = true
+            result.user = loggedIN.dataValues
+        }
+    }
+    catch (err) {
+        console.log("error", err)
+        result.success = false
     }
     finally {
         res.setHeader("content-type", "application/json")

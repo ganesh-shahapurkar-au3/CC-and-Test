@@ -13,6 +13,25 @@ async function readUsersData() {
     }
 }
 
+async function verifyLogin(data) {
+    console.log("data==>>", data)
+    const { username, password } = data;
+    try {
+        const result = await User.findOne({
+            where: { username: username }
+        })
+        console.log(result.password + "&" + password)
+        if (!result) {
+            return false;
+        } else if (result.password === password) {
+            return result
+        }
+    }
+    catch (err) {
+        console.log("error" + err)
+        return false
+    }
+}
 
 async function adduser(data) {
     console.log(data)
@@ -32,4 +51,4 @@ async function adduser(data) {
     }
 }
 
-module.exports = { readUsersData, adduser }
+module.exports = { readUsersData, adduser, verifyLogin }

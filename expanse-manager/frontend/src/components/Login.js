@@ -1,31 +1,56 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import { checkLogin } from '../Api/api'
 
 export default function Login() {
 
-    const handleChange = () => {
-        console.log("hello")
+    const [state, setstate] = useState({
+        username: "",
+        password: ""
+    })
+
+    const history = useHistory()
+
+    const handleChange = (event) => {
+        const { name, value } = event.target
+        setstate({
+            ...state,
+            [name]: value
+        })
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        try {
+            const userData = {
+                username: state.username,
+                password: state.password
+            }
+            checkLogin(userData, history)
+        }
+        catch (err) {
+            console.log("error" + err)
+            alert("Please Fill Valid Details")
+        }
     }
 
     return (
         <div className="container col-md-3 mt-5">
             <h2>Login</h2>
             <div className="text-center mt-3">
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <input
-                            id="eml"
-                            name="email"
+                            name="username"
                             className="form-control"
                             placeholder="User Name"
-                            type="email"
+                            type="text"
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="form-group">
                         <input
-                            id="psw"
                             name="password"
                             className="form-control"
                             placeholder="Enter password"
@@ -35,7 +60,7 @@ export default function Login() {
                     </div>
 
                     <div className="form-group">
-                        <button className="btn btn-primary login-btn btn-block">Sign in</button>
+                        <button type="submit" className="btn btn-primary login-btn btn-block">Sign in</button>
                     </div>
 
                     <div className="or-seperator">

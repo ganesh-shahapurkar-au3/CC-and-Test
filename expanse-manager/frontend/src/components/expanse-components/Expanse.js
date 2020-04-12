@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { addNewExpanse } from '../../Api/api';
 
 export default function Expanse() {
 
     const [state, setstate] = useState({
         categories: "",
         amount: 0,
-        description: ""
+        description: "",
+        tag: "",
+        showForm: false
     })
+    const userId = JSON.parse(localStorage.getItem("userData")).id;
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -16,26 +20,65 @@ export default function Expanse() {
         })
     }
 
+    const handleTag = (event) => {
+        setstate({
+            ...state,
+            tag: event.target.name,
+            showForm: true
+        })
+    }
+
+    const handleCancle = () => {
+        setstate({
+            ...state,
+            showForm: false
+        })
+    }
+
     const handleSumbit = (event) => {
         event.preventDefault();
-        let arr = [];
-        arr.push(state)
-        console.log("array ===>>>>", arr)
+
+        setstate({
+            ...state,
+            showForm: false
+        })
+        try {
+            const expanseData = {
+                userId: userId,
+                categories: state.categories,
+                amount: state.amount,
+                description: state.description,
+                tag: state.tag
+            }
+            addNewExpanse(expanseData)
+            alert("Added Successfully")
+            window.location.reload()
+        }
+        catch (err) {
+            console.log("error" + err)
+        }
     }
 
     return (
 
         <div>
-            <button className="btn p-4 m-3 btn-warning rounded">
+            <button name="expanse" className="btn p-4 m-3 btn-warning rounded" onClick={handleTag}>
                 Expanse -
             </button>
-            <button className="btn p-4 m-3 btn-success rounded">
+            <button name="income" className="btn p-4 m-3 btn-success rounded" onClick={handleTag}>
                 Income +
             </button>
 
-            <section>
-                <form onSubmit={handleSumbit}>
+            <section className={state.showForm ? "d-block" : "d-none"}>
 
+                <div className="col-4">
+                    <button type="button" className="btn btn-outline-danger close text-white mb-2 p-3" onClick={handleCancle}>
+                        &#10006;
+                    </button>
+                </div>
+
+
+                <form onSubmit={handleSumbit}>
                     <div className="input-group mb-3 col-4">
                         <div className="input-group-prepend">
                             <label className="input-group-text" htmlFor="inputGroupSelect01">categories</label>

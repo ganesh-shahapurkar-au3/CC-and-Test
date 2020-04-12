@@ -8,7 +8,8 @@ async function addExpanse(data) {
             userId: data.userId,
             categories: data.categories,
             amount: data.amount,
-            description: data.description
+            description: data.description,
+            tag: data.tag
         })
         console.log("epxanse addedd successfully")
         return true
